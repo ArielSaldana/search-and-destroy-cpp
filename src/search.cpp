@@ -4,19 +4,20 @@
 
 #include "search.h"
 #include "sha256.h"
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <mutex>
 #include <string>
 #include <thread>
 #include <unordered_map>
+#include <utility>
 #include <vector>
-#include <cstdint>
 
 std::vector<std::string> search::get_directory_files(const std::filesystem::path &path) {
     std::vector<std::string> files;
     if (std::filesystem::exists(path) && std::filesystem::is_directory(path)) {
-        for (const auto &entry: std::filesystem::directory_iterator(path)) {
+        for (const auto &entry : std::filesystem::directory_iterator(path)) {
             if (std::filesystem::is_regular_file(entry)) {
                 files.push_back(entry.path().string());
             }
@@ -65,7 +66,6 @@ std::string get_file_hash(const std::string &file_path, bool read_full_file = fa
         std::cerr << "Failed to open the file: " << file_path << std::endl;
     }
 
-
     std::streampos pos = file.tellg();
     if (pos == -1) {
         throw std::runtime_error("Cannot read file");
@@ -81,7 +81,7 @@ std::string get_file_hash(const std::string &file_path, bool read_full_file = fa
 
     file.clear();
     file.seekg(0, std::ios::beg);
-    char* buffer = new char[buffer_size];
+    char *buffer = new char[buffer_size];
     file.read(buffer, buffer_size);
 
     if (file.fail()) {
@@ -145,35 +145,42 @@ search::get_file_hashes(const std::vector<std::string> &files_paths) {
     return files_hashes;
 }
 
-std::unordered_map<std::string, std::vector<std::string>>
+std::vector<std::pair<std::string, std::string>>
 search::filter_different_files(std::unordered_map<std::string, std::vector<std::string>> &file_hashes) {
     auto hashed_map = std::unordered_map<std::string, std::vector<std::string>>();
+    auto files_to_delete = std::vector<std::pair<std::string, std::string>>();
 
-    auto dupe_count = 0;
-    for (const auto &pair: file_hashes) {
+    for (const auto &pair : file_hashes) {
         if (pair.second.size() > 1) {
-            auto dupe_map = std::unordered_map<uint64_t , std::vector<std::string>>();
+            auto dupe_map = std::unordered_map<uint64_t, std::vector<std::string>>();
             for (const auto &file : pair.second) {
                 const auto file_size = search::file_size(file);
                 dupe_map[file_size].emplace_back(file);
             }
 
-            for (const auto &entry: dupe_map) {
+            // after going through the file size check, if any duplicates are suspected do full scans on the files
+            auto hashes = std::unordered_map<std::string, std::string>();
+            for (const auto &entry : dupe_map) {
                 if (entry.second.size() > 1) {
-                    for (const auto &dupe: entry.second) {
-                        std::cout << "duplicate suspected: " << dupe << std::endl;
-                        dupe_count++;
+                    for (const auto &dupe : entry.second) {
+                        auto file_hash = get_file_hash(dupe, true);
+                        // exact file hash exists, mark for deletion
+                        if (hashes.contains(file_hash)) {
+                            auto original_file = hashes[file_hash];
+                            auto delete_pair = std::pair<std::string, std::string>(dupe, original_file);
+                            files_to_delete.emplace_back(delete_pair);
+                        } else {
+                            hashes[file_hash] = dupe;
+                        }
                     }
                 }
             }
         }
     }
-
-    std::cout << dupe_count << std::endl;
-    return hashed_map;
+    return files_to_delete;
 }
 
-std::unordered_map<std::string, std::vector<std::string>> search::search_directory(const std::string &root_directory) {
+std::vector<std::pair<std::string, std::string>> search::search_directory(const std::string &root_directory) {
     auto files_list = get_directory_files(root_directory);
     auto files_hashes = get_file_hashes(files_list);
     auto filtered_list = filter_different_files(files_hashes);

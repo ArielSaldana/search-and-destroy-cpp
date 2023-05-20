@@ -7,26 +7,17 @@ int main() {
     // Get the start time
     auto start = std::chrono::high_resolution_clock::now();
 
+    // Run the search function to get the vector of pairs <duplicate_file_to_delete, original_file>
     const std::string root_directory = "/Users/ariel/Movies";
-    auto files_map = search::search_directory(root_directory);
+    auto files_to_delete = search::search_directory(root_directory);
 
     // Get the end time
     auto end = std::chrono::high_resolution_clock::now();
-    // Compute the difference between the two times in microseconds
-    auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << "Elapsed time: " << elapsed.count() / 1000 << " ms" << std::endl;
-    std::cout << "Suspected dupes" << std::endl;
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-    size_t count = 0;
-    for (auto const &map_pair : files_map) {
-        if (map_pair.second.size() > 5) {
-            for (const auto &file : map_pair.second) {
-                std::cout << map_pair.first << " / " << file << std::endl;
-                count++;
-            }
-        }
-    }
-    std::cout << "Total number of suspected dupes: " << count << std::endl;
+    // Print things
+    std::cout << "Elapsed time: " << elapsed.count() << " ms" << std::endl;
+    std::cout << "Total number of suspected dupes: " << files_to_delete.size() << std::endl;
 
     return 0;
 }
