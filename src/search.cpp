@@ -135,7 +135,14 @@ search::get_file_hashes (const std::vector<std::string> &files_paths)
     std::mutex file_paths_mutex;
     auto files_hashes = std::unordered_map<std::string, std::vector<std::string> > ();
 
-    size_t number_of_threads = 10;
+    size_t number_of_threads = std::thread::hardware_concurrency ();
+
+    if (number_of_threads == 0)
+        {
+            std::cout << "warning: unable to get a read on how many cores are running on the system, defaulting to 1.";
+            number_of_threads = 1;
+        }
+
     std::vector<std::thread> threads;
 
     threads.reserve (number_of_threads);
