@@ -3,6 +3,8 @@ project(search_and_destroy_cpp)
 
 set(CMAKE_CXX_STANDARD 23)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Add the 'include' directory to the include file search path
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
