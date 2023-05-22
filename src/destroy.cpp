@@ -1,10 +1,14 @@
 #include "destroy.h"
-#include <filesystem>
 #include <iostream>
 
 bool
 destroy::destroy_files(const std::vector<std::pair<std::string, std::string>>& files_to_delete)
 {
+    if (files_to_delete.empty())
+    {
+        std::cout << "Nothing to delete" << std::endl;
+        return false;
+    }
 
     std::cout << "\033[31mFor now instead of doing destructive operations we "
                  "will just be renaming files suffixed with "
