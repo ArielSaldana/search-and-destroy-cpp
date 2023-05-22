@@ -25,6 +25,7 @@ destroy::destroy_files(const std::vector<std::pair<std::string, std::string>>& f
         if (result != 0)
         {
             // failure
+            std::cout << "failed to mark file for deletion" << std::endl;
             return false;
         }
     }
