@@ -46,31 +46,6 @@ search::file_size(const std::string& file_path)
     return file_size;
 }
 
-bool
-search::are_files_same_size(const std::string& first_file, const std::string& second_file)
-{
-    std::ifstream f_file(first_file, std::ifstream::ate | std::ifstream::binary);
-    if (!f_file)
-    {
-        std::cerr << "Failed to open the file: " << first_file << std::endl;
-    }
-    std::streampos first_file_pos = f_file.tellg();
-    auto first_file_size = static_cast<size_t>(static_cast<std::streamsize>(first_file_pos));
-
-    std::ifstream s_file(first_file, std::ifstream::ate | std::ifstream::binary);
-    if (!s_file)
-    {
-        std::cerr << "Failed to open the file: " << first_file << std::endl;
-    }
-    std::streampos second_file_pos = s_file.tellg();
-    auto second_file_size = static_cast<size_t>(static_cast<std::streamsize>(second_file_pos));
-
-    f_file.close();
-    s_file.close();
-
-    return (first_file_size == second_file_size);
-}
-
 std::string
 get_file_hash(const std::string& file_path, bool read_full_file = false)
 {
