@@ -15,6 +15,8 @@ class search
 {
 
 public:
+    static constexpr size_t default_number_of_threads = 1;
+
     [[nodiscard]] static std::vector<std::pair<std::string, std::string>> search_directory(
         const std::string& root_directory);
 
