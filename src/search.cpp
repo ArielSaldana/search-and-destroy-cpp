@@ -18,15 +18,22 @@ std::vector<std::string>
 search::get_directory_files(const std::filesystem::path& path)
 {
     std::vector<std::string> files;
-    if (std::filesystem::exists(path) && std::filesystem::is_directory(path))
+    try
     {
-        for (const auto& entry : std::filesystem::directory_iterator(path))
+        if (std::filesystem::exists(path) && std::filesystem::is_directory(path))
         {
-            if (std::filesystem::is_regular_file(entry))
+            for (const auto& entry : std::filesystem::directory_iterator(path))
             {
-                files.push_back(entry.path().string());
+                if (std::filesystem::is_regular_file(entry))
+                {
+                    files.push_back(entry.path().string());
+                }
             }
         }
+    }
+    catch (const std::filesystem::filesystem_error& ex)
+    {
+        std::cerr << "Error: " << ex.what() << std::endl;
     }
     return files;
 }
