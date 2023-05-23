@@ -3,6 +3,7 @@
 #include <chrono>
 #include <iostream>
 #include <string>
+#include <string_view>
 
 int
 main(int argc, char* argv[])
@@ -11,12 +12,12 @@ main(int argc, char* argv[])
     auto start = std::chrono::high_resolution_clock::now();
 
     // convert the args into a vector of strings
-    std::vector<std::string> args(argv, argv + argc);
+    std::vector<std::string_view> args(argv, argv + argc);
 
     // Run the search function to get the vector of pairs
     // <duplicate_file_to_delete, original_file>
-    const std::string root_directory = args[1];
-    std::cout << "Root directory set to: " << root_directory << std::endl;
+    const std::string root_directory = args[1].data();
+    std::cout << "Root directory set to: " << root_directory.c_str() << std::endl;
     auto files_to_delete = search::search_directory(root_directory);
 
     // Get the end time
