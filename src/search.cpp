@@ -14,10 +14,10 @@
 #include <utility>
 #include <vector>
 
-std::vector<std::string>
+std::vector<std::string_view>
 search::get_directory_files(const std::filesystem::path& path)
 {
-    std::vector<std::string> files;
+    std::vector<std::string_view> files;
     try
     {
         if (std::filesystem::exists(path) && std::filesystem::is_directory(path))
@@ -110,9 +110,9 @@ get_file_hash(const std::string& file_path, bool read_full_file = false)
 }
 
 std::unordered_map<std::string, std::vector<std::string>>
-search::get_file_hashes(const std::vector<std::string>& files_paths)
+search::get_file_hashes(const std::vector<std::string_view>& files_paths)
 {
-    std::vector<std::string> files_to_process = files_paths;
+    std::vector<std::string_view> files_to_process = files_paths;
     std::mutex files_hashes_mutex;
     std::mutex file_paths_mutex;
     auto files_hashes = std::unordered_map<std::string, std::vector<std::string>>();
