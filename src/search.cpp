@@ -122,10 +122,12 @@ search::get_file_hashes(const std::vector<std::string>& files_paths)
 
     if (number_of_threads == 0)
     {
-        // commenting out the std::format code, at the time of writing it's not available on Apple Clang.
-        //        std:: cout << std::format("warning: unable to get a read on how many cores are running \"\n"
-        //            "                     \"on the system, defaulting to {}.", search::default_number_of_threads) <<
-        //            std::endl;
+        // commenting out the std::format code, at the time of writing it's not
+        // available on Apple Clang.
+        //        std:: cout << std::format("warning: unable to get a read on how
+        //        many cores are running \"\n"
+        //            "                     \"on the system, defaulting to {}.",
+        //            search::default_number_of_threads) << std::endl;
         std::cout << "warning: unable to get a read on how many cores are running "
                      "on the system, defaulting to "
                   << default_number_of_threads << "." << std::endl;

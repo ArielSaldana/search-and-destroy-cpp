@@ -13,11 +13,15 @@ class SHA256
 
 public:
     SHA256();
-    void update(const uint8_t* data, size_t length);
-    void update(const std::string& data);
-    uint8_t* digest();
+    void
+    update(const uint8_t* data, size_t length);
+    void
+    update(const std::string& data);
+    uint8_t*
+    digest();
 
-    static std::string toString(const uint8_t* digest);
+    static std::string
+    toString(const uint8_t* digest);
 
 private:
     uint8_t m_data[64];
@@ -34,14 +38,22 @@ private:
         0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814,
         0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2 };
 
-    static uint32_t rotr(uint32_t x, uint32_t n);
-    static uint32_t choose(uint32_t e, uint32_t f, uint32_t g);
-    static uint32_t majority(uint32_t a, uint32_t b, uint32_t c);
-    static uint32_t sig0(uint32_t x);
-    static uint32_t sig1(uint32_t x);
-    void transform();
-    void pad();
-    void revert(uint8_t* hash);
+    static uint32_t
+    rotr(uint32_t x, uint32_t n);
+    static uint32_t
+    choose(uint32_t e, uint32_t f, uint32_t g);
+    static uint32_t
+    majority(uint32_t a, uint32_t b, uint32_t c);
+    static uint32_t
+    sig0(uint32_t x);
+    static uint32_t
+    sig1(uint32_t x);
+    void
+    transform();
+    void
+    pad();
+    void
+    revert(uint8_t* hash);
 };
 
 #endif // SEARCH_AND_DESTROY_CPP_SHA256_H
