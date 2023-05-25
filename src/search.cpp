@@ -221,16 +221,7 @@ std::vector<std::pair<std::string, std::string>>
 search::search_directory(const std::string& root_directory)
 {
     auto files_list = get_directory_files(root_directory);
-    std::cout << "1" << std::endl;
-
-    for (const auto &file : files_list) {
-        std::cout << file << std::endl;
-    }
-
-
     auto files_hashes = get_file_hashes(files_list);
-    std::cout << "2" << std::endl;
     auto filtered_list = filter_different_files(files_hashes);
-    std::cout << "3" << std::endl;
     return filtered_list;
 }
