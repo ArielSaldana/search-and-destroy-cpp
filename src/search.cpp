@@ -24,9 +24,18 @@ search::get_directory_files(const std::filesystem::path& path)
         {
             for (const auto& entry : std::filesystem::directory_iterator(path))
             {
+                if (std::filesystem::is_symlink(entry))
+                {
+                    continue;
+                }
                 if (std::filesystem::is_regular_file(entry))
                 {
-                    files.push_back(entry.path().string());
+                    files.emplace_back(entry.path().string());
+                }
+                else if (std::filesystem::is_directory(entry))
+                {
+                    auto recursive_search_files = search::get_directory_files(entry);
+                    files.insert(files.end(), recursive_search_files.begin(), recursive_search_files.end());
                 }
             }
         }
