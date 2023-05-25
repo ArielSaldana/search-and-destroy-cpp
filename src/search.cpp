@@ -198,7 +198,7 @@ search::filter_different_files(std::unordered_map<std::string, std::vector<std::
                     {
                         auto file_hash = get_file_hash(dupe, true);
                         // exact file hash exists, mark for deletion
-                        if (hashes.contains(file_hash))
+                        if (hashes.find(file_hash) != hashes.end())
                         {
                             auto original_file = hashes[file_hash];
                             auto delete_pair = std::pair<std::string, std::string>(dupe, original_file);
