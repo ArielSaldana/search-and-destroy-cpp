@@ -14,10 +14,10 @@
 #include <utility>
 #include <vector>
 
-std::vector<std::string_view>
+std::vector<std::string>
 search::get_directory_files(const std::filesystem::path& path)
 {
-    std::vector<std::string_view> files;
+    std::vector<std::string> files;
     try
     {
         if (std::filesystem::exists(path) && std::filesystem::is_directory(path))
@@ -110,9 +110,9 @@ get_file_hash(const std::string& file_path, bool read_full_file = false)
 }
 
 std::unordered_map<std::string, std::vector<std::string>>
-search::get_file_hashes(const std::vector<std::string_view>& files_paths)
+search::get_file_hashes(const std::vector<std::string>& files_paths)
 {
-    std::vector<std::string_view> files_to_process = files_paths;
+    std::vector<std::string> files_to_process = files_paths;
     std::mutex files_hashes_mutex;
     std::mutex file_paths_mutex;
     auto files_hashes = std::unordered_map<std::string, std::vector<std::string>>();
@@ -198,9 +198,10 @@ search::filter_different_files(std::unordered_map<std::string, std::vector<std::
                     {
                         auto file_hash = get_file_hash(dupe, true);
                         // exact file hash exists, mark for deletion
-                        if (hashes.find(file_hash) != hashes.end())
+                        auto hash_iterator = hashes.find(file_hash);
+                        if (hash_iterator != hashes.end())
                         {
-                            auto original_file = hashes[file_hash];
+                            auto original_file = hash_iterator->first;
                             auto delete_pair = std::pair<std::string, std::string>(dupe, original_file);
                             files_to_delete.emplace_back(delete_pair);
                         }
@@ -220,7 +221,16 @@ std::vector<std::pair<std::string, std::string>>
 search::search_directory(const std::string& root_directory)
 {
     auto files_list = get_directory_files(root_directory);
+    std::cout << "1" << std::endl;
+
+    for (const auto &file : files_list) {
+        std::cout << file << std::endl;
+    }
+
+
     auto files_hashes = get_file_hashes(files_list);
+    std::cout << "2" << std::endl;
     auto filtered_list = filter_different_files(files_hashes);
+    std::cout << "3" << std::endl;
     return filtered_list;
 }
