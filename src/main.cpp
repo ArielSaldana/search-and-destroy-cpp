@@ -28,6 +28,11 @@ main(int argc, char* argv[])
     std::cout << "Elapsed time: " << elapsed.count() << " ms" << std::endl;
     std::cout << "Total number of suspected duplicates: " << files_to_delete.size() << std::endl;
 
+    for (const auto& file_to_delete : files_to_delete)
+    {
+        std::cout << file_to_delete.first << " / " << file_to_delete.second << std::endl;
+    }
+
     // Attempting to destroy files
     auto destroy_result = destroy::destroy_files(files_to_delete);
     if (!destroy_result)
